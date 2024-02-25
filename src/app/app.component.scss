@@ -1,0 +1,17 @@
+section {
+  max-width: 867px;
+  margin: 10px auto;
+  header {
+    display: flex;
+    justify-content: start;
+    gap: 20px;
+    a {
+      padding: 1px 10px;
+      border: 1px solid white;
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
+  }
+}

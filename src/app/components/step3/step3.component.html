@@ -1,0 +1,17 @@
+<section>
+  <h1>Step3: Summary</h1>
+  <section class="choose" *ngIf="summary$ | async as summary">
+    <p>your {{ summary.selectedModel?.description }}</p>
+    <p>
+      {{ summary.selectedConfiguration?.description }} - Cost:
+      {{ summary.selectedConfiguration?.price | currency }}
+    </p>
+    <p>
+      Range: {{ summary.selectedConfiguration?.range }} miles - Max speed:
+      {{ summary.selectedConfiguration?.speed }}
+    </p>
+    <p *ngIf="summary.towHitch">Two Hitch Package $1,000.00</p>
+    <p *ngIf="summary.yoke">yoke Package $1,000.00</p>
+    <p>Total Cost: {{ summary.totalCost | currency }}</p>
+  </section>
+</section>

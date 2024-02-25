@@ -1,0 +1,31 @@
+<section>
+  <h1>Choose your Model and Color</h1>
+  <section class="choose" *ngIf="models$ | async as models">
+    <form #step1Form="ngForm">
+      <label for="model">Model:</label>
+      <select
+        id="modelSelect"
+        name="model"
+        [(ngModel)]="selectedModel"
+        (ngModelChange)="updateData()"
+      >
+        <option *ngFor="let model of models" [ngValue]="model">
+          Model {{ model.code }}
+        </option>
+      </select>
+      <ng-template [ngIf]="selectedModel?.colors">
+        <label for="color">Color:</label>
+        <select
+          id="colorSelect"
+          name="color"
+          [(ngModel)]="selectedColor"
+          (ngModelChange)="updateData()"
+        >
+          <option *ngFor="let color of selectedModel?.colors" [ngValue]="color">
+            {{ color.description }}
+          </option>
+        </select>
+      </ng-template>
+    </form>
+  </section>
+</section>

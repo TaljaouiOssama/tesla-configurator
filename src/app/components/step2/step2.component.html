@@ -1,0 +1,41 @@
+<section>
+  <h1>Select you config and options</h1>
+  <section class="choose" *ngIf="configs$ | async as configs">
+    <form #step1Form="ngForm">
+      <label for="config">Model:</label>
+      <select
+        name="config"
+        id="configSelect"
+        [(ngModel)]="selectedConfiguration"
+        (ngModelChange)="updateData()"
+      >
+        <option *ngFor="let config of configs.configs" [ngValue]="config">
+          {{ config.description }}
+        </option>
+      </select>
+      <p *ngIf="selectedConfiguration">
+        Range: {{ selectedConfiguration.range }} miles - Max speed:
+        {{ selectedConfiguration.speed }} - Cost:
+        {{ selectedConfiguration.price | currency }}
+      </p>
+      <br />
+      <label for="towHitch">towHitch?:</label>
+      <input
+        type="checkbox"
+        name="towHitch"
+        id="includeTow"
+        [checked]="configs.towHitch"
+        disabled
+      />
+      <br />
+      <label for="yoke">yoke steering wheel?:</label>
+      <input
+        type="checkbox"
+        id="includeYok"
+        name="yoke"
+        [checked]="configs.yoke"
+        disabled
+      />
+    </form>
+  </section>
+</section>
