@@ -1,15 +1,19 @@
 <section>
   <h1>Select you config and options</h1>
-  <section class="choose" *ngIf="configs$ | async as configs">
+  <section class="choose" *ngIf="configs">
     <form #step1Form="ngForm">
       <label for="config">Model:</label>
       <select
         name="config"
         id="configSelect"
-        [(ngModel)]="selectedConfiguration"
-        (ngModelChange)="updateData()"
+        [(ngModel)]="configurationId"
+        (ngModelChange)="updateConfiguration($event)"
+        required
       >
-        <option *ngFor="let config of configs.configs" [ngValue]="config">
+        <option [value]="null" [disabled]="true" [selected]>
+          Select an option
+        </option>
+        <option *ngFor="let config of configs" [ngValue]="config.id">
           {{ config.description }}
         </option>
       </select>
@@ -24,7 +28,7 @@
         type="checkbox"
         name="towHitch"
         id="includeTow"
-        [checked]="configs.towHitch"
+        [checked]="towHitch"
         disabled
       />
       <br />
@@ -33,7 +37,7 @@
         type="checkbox"
         id="includeYok"
         name="yoke"
-        [checked]="configs.yoke"
+        [checked]="yoke"
         disabled
       />
     </form>

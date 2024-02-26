@@ -32,7 +32,8 @@ export class AppComponent implements OnInit {
         this.isStep2Disabled = !(
           data.selectedColor?.code && data.selectedModel?.code
         );
-        this.isStep3Disabled = !data.selectedConfiguration?.id;
+        this.isStep3Disabled =
+          this.isStep2Disabled || !data.selectedConfiguration?.id;
         this.modelCode = data.selectedModel?.code;
         this.colorCode = data.selectedColor?.code;
       }

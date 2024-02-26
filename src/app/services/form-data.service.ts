@@ -16,4 +16,14 @@ export class FormDataService {
     const prev = this.formDataSubject.getValue();
     this.formDataSubject.next({ ...prev, ...data });
   }
+
+  canActivateStep2() {
+    const formData = this.formDataSubject.getValue();
+    return formData?.selectedColor?.code && formData?.selectedModel?.code;
+  }
+
+  canActivateStep3() {
+    const formData = this.formDataSubject.getValue();
+    return this.canActivateStep2() && formData?.selectedConfiguration?.id;
+  }
 }

@@ -12,8 +12,14 @@ import { CommonModule } from '@angular/common';
   styleUrl: './step3.component.scss',
 })
 export class Step3Component implements OnInit {
-  summary$: Observable<(Partial<Data> & { totalCost?: number }) | null> | null =
-    null;
+  summary$: Observable<
+    | (Partial<Data> & {
+        towHitchCost?: number;
+        yokeCost?: number;
+        totalCost?: number;
+      })
+    | null
+  > | null = null;
   constructor(private formData: FormDataService) {}
   ngOnInit(): void {
     this.summary$ = this.formData.getFormData().pipe(
@@ -24,6 +30,8 @@ export class Step3Component implements OnInit {
         const totalCost = baseCost + towHitchCost + yokeCost;
         return {
           ...data,
+          towHitchCost,
+          yokeCost,
           totalCost,
         };
       })

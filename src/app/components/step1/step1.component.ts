@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { ModelService } from '../../services/model.service';
 import { Color, Model } from '../../shared/types';
 import { FormsModule } from '@angular/forms';
@@ -14,11 +14,14 @@ import { FormDataService } from '../../services/form-data.service';
   templateUrl: './step1.component.html',
   styleUrl: './step1.component.scss',
 })
-export class Step1Component implements OnInit {
-  models$: Observable<Model[]> | null = null;
+export class Step1Component implements OnInit, OnDestroy {
+  models$?: Subscription;
+  formData$?: Subscription;
 
-  selectedModel?: Model | null = null;
-  selectedColor?: Color | null = null;
+  models: Model[] | null = null;
+  colors: Color[] | null = null;
+  modelCode?: string | null = null;
+  colorCode?: string | null = null;
 
   constructor(
     private modelSercive: ModelService,
@@ -26,18 +29,39 @@ export class Step1Component implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.models$ = this.modelSercive.getModels();
-    this.formData.getFormData().subscribe((data) => {
+    this.models$ = this.modelSercive.getModels().subscribe((data) => {
+      this.models = data;
+    });
+    this.formData$ = this.formData.getFormData().subscribe((data) => {
       if (data) {
-        this.selectedModel = data.selectedModel ?? this.selectedModel;
-        this.selectedColor = data.selectedColor;
+        this.modelCode = data.selectedModel?.code;
+        this.colorCode = data.selectedColor?.code;
+        this.colors = data.selectedModel?.colors ?? null;
       }
     });
   }
-  updateData() {
+  ngOnDestroy(): void {
+    this.formData$?.unsubscribe();
+    this.models$?.unsubscribe();
+  }
+  updateModel(model: string) {
+    const selectedModel = this.models?.find((item) => item.code === model);
+    this.colors = selectedModel?.colors || null;
+    const selectedColor = this.colors?.[0];
+    this.colorCode = selectedColor?.code;
     this.formData.updateFormData({
-      selectedModel: this.selectedModel,
-      selectedColor: this.selectedColor,
+      selectedModel,
+      selectedColor,
+    });
+  }
+  updateColor(color: string) {
+    const selectedModel = this.models?.find(
+      (item) => item.code === this.modelCode
+    );
+    const selectedColor = this.colors?.find((item) => item.code === color);
+    this.formData.updateFormData({
+      selectedModel,
+      selectedColor,
     });
   }
 }

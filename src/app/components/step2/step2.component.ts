@@ -1,9 +1,9 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ConfigService } from '../../services/config.service';
 import { CommonModule } from '@angular/common';
-import { Observable, map } from 'rxjs';
-import { Configs, Configuration } from '../../shared/types';
+import { Subscription } from 'rxjs';
+import { Configs } from '../../shared/types';
 import { FormDataService } from '../../services/form-data.service';
 
 @Component({
@@ -13,22 +13,23 @@ import { FormDataService } from '../../services/form-data.service';
   templateUrl: './step2.component.html',
   styleUrl: './step2.component.scss',
 })
-export class Step2Component {
-  configs$?: Observable<Configuration>;
+export class Step2Component implements OnInit, OnDestroy {
+  configs$?: Subscription;
+  formData$?: Subscription;
 
-  selectedConfiguration?: Configs | null = null;
+  configs: Configs[] | null = null;
+  selectedConfiguration: Configs | null = null;
+  configurationId: number | null = null;
   towHitch: boolean = false;
   yoke: boolean = false;
 
   @Input()
   set codeModel(value: string) {
-    this.configs$ = this.configService.getConfig(value).pipe(
-      map((data) => {
-        this.towHitch = data.towHitch;
-        this.yoke = data.yoke;
-        return data;
-      })
-    );
+    this.configs$ = this.configService.getConfig(value).subscribe((data) => {
+      this.configs = data.configs ?? null;
+      this.towHitch = data.towHitch;
+      this.yoke = data.yoke;
+    });
   }
 
   constructor(
@@ -36,7 +37,23 @@ export class Step2Component {
     private formData: FormDataService
   ) {}
 
-  updateData() {
+  ngOnInit(): void {
+    this.formData$ = this.formData.getFormData().subscribe((data) => {
+      if (data) {
+        this.selectedConfiguration = data.selectedConfiguration ?? null;
+        this.configurationId = this.selectedConfiguration?.id ?? null;
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.configs$?.unsubscribe();
+    this.formData$?.unsubscribe();
+  }
+
+  updateConfiguration(configId: number) {
+    this.selectedConfiguration =
+      this.configs?.find((item) => item.id === configId) ?? null;
     this.formData.updateFormData({
       selectedConfiguration: this.selectedConfiguration,
       towHitch: this.towHitch,

@@ -10,8 +10,12 @@
       Range: {{ summary.selectedConfiguration?.range }} miles - Max speed:
       {{ summary.selectedConfiguration?.speed }}
     </p>
-    <p *ngIf="summary.towHitch">Two Hitch Package $1,000.00</p>
-    <p *ngIf="summary.yoke">yoke Package $1,000.00</p>
+    <p *ngIf="summary.towHitchCost">
+      Two Hitch Package {{ summary.towHitchCost | currency }}
+    </p>
+    <p *ngIf="summary.yokeCost">
+      yoke Package {{ summary.yokeCost | currency }}
+    </p>
     <p>Total Cost: {{ summary.totalCost | currency }}</p>
   </section>
 </section>
