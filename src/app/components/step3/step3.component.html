@@ -10,6 +10,10 @@
       Range: {{ summary.selectedConfiguration?.range }} miles - Max speed:
       {{ summary.selectedConfiguration?.speed }}
     </p>
+    <p>
+      {{ summary.selectedColor?.description }}:
+      {{ summary.selectedColor?.price | currency }}
+    </p>
     <p *ngIf="summary.towHitchCost">
       Two Hitch Package {{ summary.towHitchCost | currency }}
     </p>

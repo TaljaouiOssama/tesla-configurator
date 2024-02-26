@@ -27,7 +27,8 @@ export class Step3Component implements OnInit {
         const baseCost = data?.selectedConfiguration?.price ?? 0;
         const towHitchCost = data?.towHitch ? 1000 : 0;
         const yokeCost = data?.yoke ? 1000 : 0;
-        const totalCost = baseCost + towHitchCost + yokeCost;
+        const paintCost = data?.selectedColor?.price ?? 0;
+        const totalCost = baseCost + towHitchCost + yokeCost + paintCost;
         return {
           ...data,
           towHitchCost,

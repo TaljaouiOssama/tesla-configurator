@@ -52,6 +52,7 @@ export class Step1Component implements OnInit, OnDestroy {
     this.formData.updateFormData({
       selectedModel,
       selectedColor,
+      selectedConfiguration: null,
     });
   }
   updateColor(color: string) {
@@ -62,6 +63,7 @@ export class Step1Component implements OnInit, OnDestroy {
     this.formData.updateFormData({
       selectedModel,
       selectedColor,
+      selectedConfiguration: null,
     });
   }
 }
