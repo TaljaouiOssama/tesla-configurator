@@ -28,8 +28,10 @@
         type="checkbox"
         name="towHitch"
         id="includeTow"
+        [(ngModel)]="towHitch"
+        (change)="updateTowHitch()"
         [checked]="towHitch"
-        disabled
+        [disabled]="!initTowHitch"
       />
       <br />
       <label for="yoke">yoke steering wheel?:</label>
@@ -37,8 +39,10 @@
         type="checkbox"
         id="includeYok"
         name="yoke"
+        [(ngModel)]="yoke"
+        (change)="updateYoke()"
         [checked]="yoke"
-        disabled
+        [disabled]="!initYoke"
       />
     </form>
   </section>

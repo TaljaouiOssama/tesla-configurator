@@ -20,15 +20,23 @@ export class Step2Component implements OnInit, OnDestroy {
   configs: Configs[] | null = null;
   selectedConfiguration: Configs | null = null;
   configurationId: number | null = null;
-  towHitch: boolean = false;
-  yoke: boolean = false;
+  initTowHitch: boolean = false;
+  initYoke: boolean = false;
+  towHitch: boolean | null = null;
+  yoke: boolean | null = null;
 
   @Input()
   set codeModel(value: string) {
     this.configs$ = this.configService.getConfig(value).subscribe((data) => {
       this.configs = data.configs ?? null;
-      this.towHitch = data.towHitch;
-      this.yoke = data.yoke;
+
+      if (!this.configurationId) {
+        this.towHitch = data.towHitch;
+        this.yoke = data.yoke;
+      }
+
+      this.initTowHitch = data.towHitch;
+      this.initYoke = data.yoke;
     });
   }
 
@@ -42,6 +50,8 @@ export class Step2Component implements OnInit, OnDestroy {
       if (data) {
         this.selectedConfiguration = data.selectedConfiguration ?? null;
         this.configurationId = this.selectedConfiguration?.id ?? null;
+        if (this.towHitch === null) this.towHitch = data.towHitch as boolean;
+        if (this.yoke === null) this.yoke = data.yoke as boolean;
       }
     });
   }
@@ -58,6 +68,16 @@ export class Step2Component implements OnInit, OnDestroy {
       selectedConfiguration: this.selectedConfiguration,
       towHitch: this.towHitch,
       yoke: this.yoke,
+    });
+  }
+  updateYoke() {
+    this.formData.updateFormData({
+      yoke: this.yoke,
+    });
+  }
+  updateTowHitch() {
+    this.formData.updateFormData({
+      towHitch: this.towHitch,
     });
   }
 }
