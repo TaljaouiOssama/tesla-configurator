@@ -1,15 +1,18 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { DestroyRef, Injectable } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { Data } from '../shared/types';
-
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 @Injectable({
   providedIn: 'root',
 })
 export class FormDataService {
   private formDataSubject = new BehaviorSubject<Partial<Data> | null>(null);
 
-  getFormData() {
-    return this.formDataSubject.asObservable();
+  constructor(private ref: DestroyRef) {}
+  getFormData(): Observable<Partial<Data> | null> {
+    return this.formDataSubject
+      .asObservable()
+      .pipe(takeUntilDestroyed(this.ref));
   }
 
   updateFormData(data: Partial<Data>) {

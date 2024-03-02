@@ -1,8 +1,7 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ConfigService } from '../../services/config.service';
 import { CommonModule } from '@angular/common';
-import { Subscription } from 'rxjs';
 import { Configs } from '../../shared/types';
 import { FormDataService } from '../../services/form-data.service';
 
@@ -13,10 +12,7 @@ import { FormDataService } from '../../services/form-data.service';
   templateUrl: './step2.component.html',
   styleUrl: './step2.component.scss',
 })
-export class Step2Component implements OnInit, OnDestroy {
-  configs$?: Subscription;
-  formData$?: Subscription;
-
+export class Step2Component {
   configs: Configs[] | null = null;
   selectedConfiguration: Configs | null = null;
   configurationId: number | null = null;
@@ -27,7 +23,16 @@ export class Step2Component implements OnInit, OnDestroy {
 
   @Input()
   set codeModel(value: string) {
-    this.configs$ = this.configService.getConfig(value).subscribe((data) => {
+    this.formData.getFormData().subscribe((data) => {
+      if (data) {
+        this.selectedConfiguration = data.selectedConfiguration ?? null;
+        this.configurationId = this.selectedConfiguration?.id ?? null;
+        if (this.towHitch === null) this.towHitch = data.towHitch as boolean;
+        if (this.yoke === null) this.yoke = data.yoke as boolean;
+      }
+    });
+
+    this.configService.getConfig(value).subscribe((data) => {
       this.configs = data.configs ?? null;
 
       if (!this.configurationId) {
@@ -44,22 +49,6 @@ export class Step2Component implements OnInit, OnDestroy {
     private configService: ConfigService,
     private formData: FormDataService
   ) {}
-
-  ngOnInit(): void {
-    this.formData$ = this.formData.getFormData().subscribe((data) => {
-      if (data) {
-        this.selectedConfiguration = data.selectedConfiguration ?? null;
-        this.configurationId = this.selectedConfiguration?.id ?? null;
-        if (this.towHitch === null) this.towHitch = data.towHitch as boolean;
-        if (this.yoke === null) this.yoke = data.yoke as boolean;
-      }
-    });
-  }
-
-  ngOnDestroy(): void {
-    this.configs$?.unsubscribe();
-    this.formData$?.unsubscribe();
-  }
 
   updateConfiguration(configId: number) {
     this.selectedConfiguration =

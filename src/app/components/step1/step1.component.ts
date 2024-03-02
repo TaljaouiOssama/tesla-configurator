@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Component, OnInit } from '@angular/core';
 import { ModelService } from '../../services/model.service';
 import { Color, Model } from '../../shared/types';
 import { FormsModule } from '@angular/forms';
@@ -14,10 +13,7 @@ import { FormDataService } from '../../services/form-data.service';
   templateUrl: './step1.component.html',
   styleUrl: './step1.component.scss',
 })
-export class Step1Component implements OnInit, OnDestroy {
-  models$?: Subscription;
-  formData$?: Subscription;
-
+export class Step1Component implements OnInit {
   models: Model[] | null = null;
   colors: Color[] | null = null;
   modelCode?: string | null = null;
@@ -29,20 +25,16 @@ export class Step1Component implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.models$ = this.modelSercive.getModels().subscribe((data) => {
+    this.modelSercive.getModels().subscribe((data) => {
       this.models = data;
     });
-    this.formData$ = this.formData.getFormData().subscribe((data) => {
+    this.formData.getFormData().subscribe((data) => {
       if (data) {
         this.modelCode = data.selectedModel?.code;
         this.colorCode = data.selectedColor?.code;
         this.colors = data.selectedModel?.colors ?? null;
       }
     });
-  }
-  ngOnDestroy(): void {
-    this.formData$?.unsubscribe();
-    this.models$?.unsubscribe();
   }
   updateModel(model: string) {
     const selectedModel = this.models?.find((item) => item.code === model);
@@ -58,12 +50,8 @@ export class Step1Component implements OnInit, OnDestroy {
     });
   }
   updateColor(color: string) {
-    const selectedModel = this.models?.find(
-      (item) => item.code === this.modelCode
-    );
     const selectedColor = this.colors?.find((item) => item.code === color);
     this.formData.updateFormData({
-      selectedModel,
       selectedColor,
     });
   }
